@@ -5,6 +5,7 @@ interface CustomNodeData {
   label: string;
   onAdd: () => void;
   onChangeLabel: (newLabel: string) => void;
+  onDelete: () => void;
 }
 
 const CustomNode: React.FC<NodeProps<CustomNodeData>> = ({ data }) => {
@@ -26,7 +27,13 @@ const CustomNode: React.FC<NodeProps<CustomNodeData>> = ({ data }) => {
   };
 
   return (
-    <div className="flex flex-col gap-1 bg-white shadow-lg rounded p-2 text-center w-36 ">
+    <div className=" relative flex flex-col gap-1 bg-white shadow-lg rounded p-2 text-center w-36 ">
+      <button
+        onClick={data.onDelete}
+        className="bg-red-600 text-white rounded-full p-1 w-3 h-3  absolute -top-[6px] left-0"
+      >
+        <div className="absolute -top-[6px] left-0 w-3 h-3 ">-</div>
+      </button>
       {isEditing ? (
         <input
           type="text"
@@ -47,12 +54,14 @@ const CustomNode: React.FC<NodeProps<CustomNodeData>> = ({ data }) => {
         </div>
       )}
       {!isEditing && (
-        <button
-          onClick={data.onAdd}
-          className="bg-green-600 text-white rounded "
-        >
-          <div className="text-xs">+</div>
-        </button>
+        <div className="flex justify-center gap-1">
+          <button
+            onClick={data.onAdd}
+            className="bg-green-600 text-white rounded p-1 w-full"
+          >
+            <div className="text-xs">+</div>
+          </button>
+        </div>
       )}
       <Handle
         type="target"

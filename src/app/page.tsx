@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -20,7 +20,12 @@ const initialNodes: Node[] = [
     id: "1",
     type: "customNode",
     position: { x: 0, y: 0 },
-    data: { label: "مدیر عامل", onAdd: () => {}, onChangeLabel: () => {} },
+    data: {
+      label: "مدیر عامل",
+      onAdd: () => {},
+      onChangeLabel: () => {},
+      onDelete: () => {},
+    },
   },
   {
     id: "2",
@@ -30,6 +35,7 @@ const initialNodes: Node[] = [
       label: "مدیر منابع انسانی",
       onAdd: () => {},
       onChangeLabel: () => {},
+      onDelete: () => {},
     },
   },
 ];
@@ -38,7 +44,7 @@ const initialEdges: Edge[] = [{ id: "e1-2", source: "1", target: "2" }];
 
 const nodeTypes = { customNode: CustomNode };
 
-export default function root() {
+export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [nodeId, setNodeId] = useState(3);
@@ -50,7 +56,7 @@ export default function root() {
   );
 
   const addNode = (sourceId?: string) => {
-    const newLabel = nodeName.trim() || ` نام را وارد کنید`;
+    const newLabel = nodeName.trim() || `نام را وارد کنید`;
     if (!newLabel) return;
 
     const newNode: Node = {
@@ -62,6 +68,7 @@ export default function root() {
         onAdd: () => addNode(nodeId.toString()),
         onChangeLabel: (newLabel: string) =>
           updateNodeLabel(nodeId.toString(), newLabel),
+        onDelete: () => deleteNode(nodeId.toString()),
       },
     };
 
@@ -89,6 +96,13 @@ export default function root() {
     );
   };
 
+  const deleteNode = (nodeId: string) => {
+    setNodes((nds) => nds.filter((node) => node.id !== nodeId));
+    setEdges((eds) =>
+      eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId)
+    );
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       addNode();
@@ -101,6 +115,7 @@ export default function root() {
       ...node.data,
       onAdd: () => addNode(node.id),
       onChangeLabel: (newLabel: string) => updateNodeLabel(node.id, newLabel),
+      onDelete: () => deleteNode(node.id),
     },
   }));
 
