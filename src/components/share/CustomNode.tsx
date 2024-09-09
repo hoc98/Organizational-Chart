@@ -1,12 +1,6 @@
+import { CustomNodeData } from "@/src/store/node/model";
 import React, { useState } from "react";
 import { Handle, Position, NodeProps } from "reactflow";
-
-interface CustomNodeData {
-  label: string;
-  onAdd: () => void;
-  onChangeLabel: (newLabel: string) => void;
-  onDelete: () => void;
-}
 
 const CustomNode: React.FC<NodeProps<CustomNodeData>> = ({ data }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -25,7 +19,12 @@ const CustomNode: React.FC<NodeProps<CustomNodeData>> = ({ data }) => {
     setIsEditing(true);
     setLabel(data.label);
   };
-
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleBlur(); 
+    }
+  };
   return (
     <div className=" relative flex flex-col gap-1 bg-white shadow-lg rounded p-2 text-center w-36 ">
       <button
@@ -40,10 +39,12 @@ const CustomNode: React.FC<NodeProps<CustomNodeData>> = ({ data }) => {
           value={label}
           onChange={handleLabelChange}
           onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
           placeholder="نام دپارتمان را وارد کنید"
-          className="rounded-lg shadow-lg text-[0.5rem] p-2"
-          style={{ direction: "rtl", textAlign: "right" }}
+          className="rounded-lg shadow-lg text-[0.5rem] p-2 text-right"
+          dir="rtl"
           autoFocus
+          
         />
       ) : (
         <div

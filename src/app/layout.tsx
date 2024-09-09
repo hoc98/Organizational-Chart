@@ -11,9 +11,9 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <html lang="en">
       <body className="bg-gray-800 text-gray-900  min-h-screen flex flex-col overflow-auto ">
-        <Header />
+        <Header/>
         <main className="flex-grow flex w-full justify-center">{children}</main>
-        <Footer />
+        <Footer/>
       </body>
     </html>
   );
